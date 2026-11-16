@@ -224,6 +224,31 @@
       "status": "live"
     },
     {
+      "id": "css-battle-arena",
+      "name": "CSS Battle Arena",
+      "shortDescription": "A pixel-perfect CSS challenge arena where you replicate visual targets using minimal, code-golfed CSS.",
+      "longDescription": "## CSS Battle Arena\\n\\nA pixel-perfect CSS code golf challenge game. Players are presented with target visual designs across 10 progressive battlegrounds and must replicate them using pure CSS. Includes live split-screen comparison, difference overlay visualizer, and pixel-by-pixel accuracy scoring.\\n\\n### Features\\n\\n- **Dual Viewports & Diff Overlay:** Real-time visual comparison with interactive split slider and CSS difference blending mode\\n- **Pixel-by-Pixel Accuracy Engine:** Mathematical accuracy calculation comparing rendered image buffers against the target canvas\\n- **10 Progressive Battlegrounds:** Levels ranging from basic geometry (Simply Square, Pill Center) to intricate graphics (Eclipse Halo, Yin Yang, Cosmic Portal)\\n- **Code Golf Scoring:** Real-time character counter and 3-star ranking reward both visual perfection and brevity\\n- **Zero-Dependency Architecture:** Single self-contained HTML file utilizing Vanilla JS and HTML5 Canvas API",
+      "category": "css-fundamentals",
+      "tags": [
+        "canvas",
+        "code-golf",
+        "css",
+        "css-challenge",
+        "frontend",
+        "interactive",
+        "quest"
+      ],
+      "techStack": [
+        "CSS3",
+        "Feather Icons",
+        "HTML5",
+        "HTML5 Canvas",
+        "Vanilla JS"
+      ],
+      "difficulty": "Hard",
+      "status": "live"
+    },
+    {
       "id": "box-model-detective-margins-edition",
       "name": "CSS Box Model Detective: Margins Edition",
       "shortDescription": "A forensic debugging quest where padding, border, and especially margins behave like clues. Configure box model values so highlighted elements align perfectly inside a blueprint while accounting for collapse rules and spacing interactions.",
@@ -628,30 +653,6 @@
         "Web Audio API"
       ],
       "difficulty": "Hard",
-      "status": "live"
-    },
-    {
-      "id": "type-coercion-gauntlet",
-      "name": "Type Coercion Gauntlet: The JavaScript Comparison Arena",
-      "shortDescription": "A fast-paced interactive quest to master JavaScript's tricky implicit type conversions, abstract equality algorithms, and edge cases.",
-      "longDescription": "## Type Coercion Gauntlet: The JavaScript Comparison Arena\n\nSurvive JavaScript's most notorious equality comparisons and implicit type coercions. Test your knowledge across 10 rapid-fire comparison rounds covering ToPrimitive conversions, ToNumber operations, boolean casting, and NaN quirks with detailed ECMAScript specification explanations.\n\n### Features\n\n- 10 carefully designed comparison rounds exploring notorious edge cases ([] == ![], null == undefined, NaN === NaN, and object arithmetic)\n- Step-by-step ECMAScript specification explanations for every correct and incorrect answer\n- Synthesized Web Audio feedback with streak bonuses and score tracking\n- Persistent progress saved to localStorage\n- Responsive, zero-dependency implementation in a single self-contained HTML file",
-      "category": "js-fundamentals",
-      "tags": [
-        "equality",
-        "javascript",
-        "learning",
-        "quest",
-        "quiz",
-        "type-coercion",
-        "types"
-      ],
-      "techStack": [
-        "CSS3",
-        "HTML5",
-        "Vanilla JS",
-        "Web Audio API"
-      ],
-      "difficulty": "Easy",
       "status": "live"
     },
     {
@@ -1273,6 +1274,30 @@
         "Web Audio API"
       ],
       "difficulty": "Hard",
+      "status": "live"
+    },
+    {
+      "id": "type-coercion-gauntlet",
+      "name": "Type Coercion Gauntlet: The JavaScript Comparison Arena",
+      "shortDescription": "A fast-paced interactive quest to master JavaScript's tricky implicit type conversions, abstract equality algorithms, and edge cases.",
+      "longDescription": "## Type Coercion Gauntlet: The JavaScript Comparison Arena\n\nSurvive JavaScript's most notorious equality comparisons and implicit type coercions. Test your knowledge across 10 rapid-fire comparison rounds covering ToPrimitive conversions, ToNumber operations, boolean casting, and NaN quirks with detailed ECMAScript specification explanations.\n\n### Features\n\n- 10 carefully designed comparison rounds exploring notorious edge cases ([] == ![], null == undefined, NaN === NaN, and object arithmetic)\n- Step-by-step ECMAScript specification explanations for every correct and incorrect answer\n- Synthesized Web Audio feedback with streak bonuses and score tracking\n- Persistent progress saved to localStorage\n- Responsive, zero-dependency implementation in a single self-contained HTML file",
+      "category": "js-fundamentals",
+      "tags": [
+        "equality",
+        "javascript",
+        "learning",
+        "quest",
+        "quiz",
+        "type-coercion",
+        "types"
+      ],
+      "techStack": [
+        "CSS3",
+        "HTML5",
+        "Vanilla JS",
+        "Web Audio API"
+      ],
+      "difficulty": "Easy",
       "status": "live"
     },
     {
