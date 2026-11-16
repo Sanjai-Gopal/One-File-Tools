@@ -631,30 +631,6 @@
       "status": "live"
     },
     {
-      "id": "type-coercion-gauntlet",
-      "name": "Type Coercion Gauntlet: The JavaScript Comparison Arena",
-      "shortDescription": "A fast-paced interactive quest to master JavaScript's tricky implicit type conversions, abstract equality algorithms, and edge cases.",
-      "longDescription": "## Type Coercion Gauntlet: The JavaScript Comparison Arena\n\nSurvive JavaScript's most notorious equality comparisons and implicit type coercions. Test your knowledge across 10 rapid-fire comparison rounds covering ToPrimitive conversions, ToNumber operations, boolean casting, and NaN quirks with detailed ECMAScript specification explanations.\n\n### Features\n\n- 10 carefully designed comparison rounds exploring notorious edge cases ([] == ![], null == undefined, NaN === NaN, and object arithmetic)\n- Step-by-step ECMAScript specification explanations for every correct and incorrect answer\n- Synthesized Web Audio feedback with streak bonuses and score tracking\n- Persistent progress saved to localStorage\n- Responsive, zero-dependency implementation in a single self-contained HTML file",
-      "category": "js-fundamentals",
-      "tags": [
-        "equality",
-        "javascript",
-        "learning",
-        "quest",
-        "quiz",
-        "type-coercion",
-        "types"
-      ],
-      "techStack": [
-        "CSS3",
-        "HTML5",
-        "Vanilla JS",
-        "Web Audio API"
-      ],
-      "difficulty": "Easy",
-      "status": "live"
-    },
-    {
       "id": "yugen-trail",
       "name": "Lantern & Rope — The Yūgen Trail",
       "shortDescription": "A serene, Yūgen-inspired quest teaching BFS and DFS graph traversals via lantern queue lanes and coiled rope stacks.",
@@ -842,6 +818,30 @@
         "Vanilla JS"
       ],
       "difficulty": "Medium",
+      "status": "live"
+    },
+    {
+      "id": "regex-escape-room",
+      "name": "Regex Escape Room",
+      "shortDescription": "Unlock 12 mysterious escape rooms by writing regular expressions that match target keys while dodging decoy traps.",
+      "longDescription": "## Regex Escape Room\\n\\nAn interactive pattern matching puzzle game. Each room features an ancient vault sealed behind a cryptographic lock. Players must construct regular expressions to match all target keys while rejecting all decoy traps to advance through 12 progressive chambers.\\n\\n### Features\\n\\n- **12 Themed Escape Chambers:** Challenges ranging from basic literal matching to character sets, anchors, quantifiers, lookaheads, and master validations\\n- **Real-Time Syntax Evaluator:** Immediate visual match highlighting showing target keys unlocked and decoy traps flagged\\n- **Dynamic Door Animations:** Interactive vault door with real-time locking and unlocking visual states\\n- **Clue & Hint System:** Contextual hints explaining core regex concepts for each room\\n- **Speedrun Stopwatch:** Track your overall escape time across all chambers with LocalStorage record tracking\\n- **Zero-Dependency Architecture:** Single self-contained HTML file built with Vanilla JS and CSS3",
+      "category": "general-dev-quests",
+      "tags": [
+        "developer-game",
+        "game",
+        "interactive",
+        "pattern-matching",
+        "puzzle",
+        "quest",
+        "regex"
+      ],
+      "techStack": [
+        "CSS3",
+        "Feather Icons",
+        "HTML5",
+        "Vanilla JS"
+      ],
+      "difficulty": "Hard",
       "status": "live"
     },
     {
@@ -1273,6 +1273,30 @@
         "Web Audio API"
       ],
       "difficulty": "Hard",
+      "status": "live"
+    },
+    {
+      "id": "type-coercion-gauntlet",
+      "name": "Type Coercion Gauntlet: The JavaScript Comparison Arena",
+      "shortDescription": "A fast-paced interactive quest to master JavaScript's tricky implicit type conversions, abstract equality algorithms, and edge cases.",
+      "longDescription": "## Type Coercion Gauntlet: The JavaScript Comparison Arena\n\nSurvive JavaScript's most notorious equality comparisons and implicit type coercions. Test your knowledge across 10 rapid-fire comparison rounds covering ToPrimitive conversions, ToNumber operations, boolean casting, and NaN quirks with detailed ECMAScript specification explanations.\n\n### Features\n\n- 10 carefully designed comparison rounds exploring notorious edge cases ([] == ![], null == undefined, NaN === NaN, and object arithmetic)\n- Step-by-step ECMAScript specification explanations for every correct and incorrect answer\n- Synthesized Web Audio feedback with streak bonuses and score tracking\n- Persistent progress saved to localStorage\n- Responsive, zero-dependency implementation in a single self-contained HTML file",
+      "category": "js-fundamentals",
+      "tags": [
+        "equality",
+        "javascript",
+        "learning",
+        "quest",
+        "quiz",
+        "type-coercion",
+        "types"
+      ],
+      "techStack": [
+        "CSS3",
+        "HTML5",
+        "Vanilla JS",
+        "Web Audio API"
+      ],
+      "difficulty": "Easy",
       "status": "live"
     },
     {

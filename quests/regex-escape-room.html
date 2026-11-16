@@ -1,0 +1,738 @@
+<!--
+Regex Escape Room
+Single-file interactive pattern matching puzzle game.
+Built for One File Tools.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regex Escape Room — One File Tools</title>
+    <meta name="description" content="Unlock 12 mysterious escape rooms by writing regular expressions that match target keys while dodging decoy traps." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script>
+      (function () {
+        const theme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+
+    <style>
+      :root {
+        --bg: #060911;
+        --grid-line: #0f172a;
+        --panel: rgba(15, 23, 42, 0.85);
+        --panel-border: #1e293b;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --accent-glow: rgba(16, 185, 129, 0.2);
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --text-dim: #64748b;
+        --target-green: #22c55e;
+        --decoy-red: #ef4444;
+        --radius-sm: 8px;
+        --radius-md: 16px;
+        --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+        --font-display: "Space Grotesk", sans-serif;
+      }
+
+      [data-theme="light"] {
+        --bg: #f8fafc;
+        --grid-line: #e2e8f0;
+        --panel: rgba(255, 255, 255, 0.95);
+        --panel-border: #cbd5e1;
+        --accent: #059669;
+        --accent-hover: #047857;
+        --accent-glow: rgba(5, 150, 105, 0.15);
+        --text: #0f172a;
+        --text-muted: #475569;
+        --text-dim: #94a3b8;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg);
+        background-image: 
+          radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.05), transparent 30%),
+          radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.05), transparent 30%),
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+        color: var(--text);
+        padding: 24px 16px 60px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 960px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .title-group h1 {
+        font-family: var(--font-display);
+        font-size: 1.85rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .title-group p {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .header-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        color: var(--text);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-display);
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .btn:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #030712;
+        box-shadow: 0 4px 14px var(--accent-glow);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        color: #fff;
+      }
+
+      /* Room Indicator Bar */
+      .room-nav {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: var(--radius-md);
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(12px);
+      }
+
+      .room-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .room-badge {
+        font-family: var(--font-mono);
+        background: var(--accent-glow);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: var(--accent);
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .room-title {
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+
+      .timer-box {
+        font-family: var(--font-mono);
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .timer-box svg {
+        width: 16px;
+        height: 16px;
+        color: var(--accent);
+      }
+
+      /* Vault Door Animation Chamber */
+      .chamber-card {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+      }
+
+      .door-status-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius-sm);
+        margin-bottom: 24px;
+        border: 1px solid var(--panel-border);
+        transition: all 0.3s ease;
+      }
+
+      .door-status-wrap.unlocked {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--accent);
+      }
+
+      .door-status-icon {
+        width: 24px;
+        height: 24px;
+        color: #ef4444;
+        transition: all 0.3s ease;
+      }
+
+      .door-status-wrap.unlocked .door-status-icon {
+        color: var(--accent);
+      }
+
+      .door-status-text {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      /* Regex Input Area */
+      .regex-bar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--panel-border);
+        border-radius: var(--radius-sm);
+        padding: 6px 14px;
+        margin-bottom: 24px;
+        transition: all 0.2s ease;
+      }
+
+      .regex-bar:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+
+      .slash {
+        font-family: var(--font-mono);
+        font-size: 1.4rem;
+        color: var(--accent);
+        user-select: none;
+      }
+
+      .regex-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: var(--font-mono);
+        font-size: 1.15rem;
+        color: var(--text);
+        padding: 8px 12px;
+      }
+
+      .flags-input {
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        color: var(--accent);
+        user-select: none;
+      }
+
+      /* Target / Decoy Grid */
+      .matrix-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 680px) {
+        .matrix-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .column-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--panel-border);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+      }
+
+      .col-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 12px;
+      }
+
+      .col-header.target {
+        color: var(--target-green);
+      }
+
+      .col-header.decoy {
+        color: var(--decoy-red);
+      }
+
+      .match-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--panel-border);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+      }
+
+      .match-item.matched-target {
+        border-color: var(--target-green);
+        background: rgba(34, 197, 94, 0.1);
+        color: #4ade80;
+      }
+
+      .match-item.matched-decoy {
+        border-color: var(--decoy-red);
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+      }
+
+      .status-pill {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+
+      /* Hint Box */
+      .hint-box {
+        background: rgba(0, 0, 0, 0.2);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        padding: 12px 16px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      footer {
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+      }
+
+      footer a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="title-group">
+          <h1>Regex Escape Room</h1>
+          <p>Pattern Matching Survival • Crack the vaults through regular expressions</p>
+        </div>
+        <div class="header-controls">
+          <button class="btn" id="themeToggle" title="Toggle Theme">
+            <i data-feather="moon"></i>
+          </button>
+          <button class="btn btn-primary" id="btnNextRoom" style="display: none;">
+            <span>Next Vault</span> <i data-feather="arrow-right"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Navigation & Timer -->
+      <section class="room-nav">
+        <div class="room-info">
+          <span class="room-badge" id="badgeRoom">Room 1 of 12</span>
+          <span class="room-title" id="roomTitle">The Forgotten Crypt</span>
+        </div>
+        <div class="timer-box">
+          <i data-feather="clock"></i>
+          <span id="timerText">00:00</span>
+        </div>
+      </section>
+
+      <!-- Vault Chamber Card -->
+      <main class="chamber-card">
+        <div class="door-status-wrap" id="doorWrap">
+          <i data-feather="lock" class="door-status-icon" id="doorIcon"></i>
+          <span class="door-status-text" id="doorStatus">Vault Sealed</span>
+        </div>
+
+        <!-- Regex Input Box -->
+        <div class="regex-bar">
+          <span class="slash">/</span>
+          <input
+            type="text"
+            id="regexInput"
+            class="regex-input"
+            placeholder="Type regex to match targets and exclude decoys..."
+            autocomplete="off"
+            spellcheck="false"
+            autofocus
+          />
+          <span class="slash">/</span>
+          <span class="flags-input">g</span>
+        </div>
+
+        <!-- Test Strings Matrix -->
+        <div class="matrix-grid">
+          <!-- Target Column (Must Match) -->
+          <div class="column-box">
+            <div class="col-header target">
+              <i data-feather="check-circle" style="width: 16px; height: 16px;"></i>
+              <span>Target Keys (Must Match All)</span>
+            </div>
+            <div id="targetList"></div>
+          </div>
+
+          <!-- Decoy Column (Must NOT Match) -->
+          <div class="column-box">
+            <div class="col-header decoy">
+              <i data-feather="x-circle" style="width: 16px; height: 16px;"></i>
+              <span>Decoy Traps (Must NOT Match Any)</span>
+            </div>
+            <div id="decoyList"></div>
+          </div>
+        </div>
+
+        <!-- Hint Section -->
+        <div class="hint-box">
+          <span id="hintText">💡 Hint: Look for identical characters across the target strings.</span>
+          <button class="btn" id="btnHint" style="padding: 4px 10px; font-size: 0.75rem;">Reveal Clue</button>
+        </div>
+      </main>
+
+      <footer>
+        <p>Part of <a href="https://github.com/praveenscience/One-File-Tools" target="_blank" rel="noopener noreferrer">One File Tools</a> • Open Source with purpose.</p>
+      </footer>
+    </div>
+
+    <script>
+      feather.replace();
+
+      // Theme toggle
+      document.getElementById("themeToggle").onclick = () => {
+        const cur = document.documentElement.getAttribute("data-theme");
+        const next = cur === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      };
+
+      // 12 Escape Rooms
+      const rooms = [
+        {
+          id: 1,
+          title: "The Forgotten Crypt",
+          concept: "Literal Matching",
+          targets: ["apple", "apple pie", "big apple"],
+          decoys: ["aple", "appple", "orange", "banana"],
+          hint: "Simply type the word 'apple' to match all instances.",
+          solution: "apple"
+        },
+        {
+          id: 2,
+          title: "The Alchemist's Study",
+          concept: "Character Sets [abc]",
+          targets: ["cat", "hat", "bat"],
+          decoys: ["rat", "mat", "fat"],
+          hint: "Use brackets like [chb] followed by 'at'.",
+          solution: "[chb]at"
+        },
+        {
+          id: 3,
+          title: "The Clockwork Tower",
+          concept: "Digits \\d",
+          targets: ["code-123", "code-456", "code-999"],
+          decoys: ["code-abc", "code-xyz", "code-###"],
+          hint: "Use \\d or [0-9] to match the numbers.",
+          solution: "code-\\d+"
+        },
+        {
+          id: 4,
+          title: "The Dark Archive",
+          concept: "Negated Sets [^...]",
+          targets: ["pin: 1A", "pin: 2B", "pin: 3C"],
+          decoys: ["pin: 19", "pin: 28", "pin: 37"],
+          hint: "Match uppercase letters that are not digits.",
+          solution: "pin: \\d[A-Z]"
+        },
+        {
+          id: 5,
+          title: "The Hall of Mirrors",
+          concept: "Anchors ^ and $",
+          targets: ["secret"],
+          decoys: ["top secret", "secretly", "secret code"],
+          hint: "Use ^ to anchor to the start and $ for the end: ^secret$",
+          solution: "^secret$"
+        },
+        {
+          id: 6,
+          title: "The Quantum Chamber",
+          concept: "Quantifiers + and *",
+          targets: ["goooal", "goal", "gooooal"],
+          decoys: ["gal", "gl", "gol"],
+          hint: "Use 'o+' to match one or more letter o's.",
+          solution: "go+al"
+        },
+        {
+          id: 7,
+          title: "The Server Fortress",
+          concept: "Alternation (a|b)",
+          targets: ["server.prod", "server.stage"],
+          decoys: ["server.dev", "server.test", "server.local"],
+          hint: "Use parentheses with pipe: server\\.(prod|stage)",
+          solution: "server\\.(prod|stage)"
+        },
+        {
+          id: 8,
+          title: "The Cryptographic Vault",
+          concept: "Exact Quantifiers {n,m}",
+          targets: ["user_1234", "user_5678", "user_9012"],
+          decoys: ["user_12", "user_123456", "user_abc"],
+          hint: "Match exactly 4 digits: \\d{4}",
+          solution: "user_\\d{4}$"
+        },
+        {
+          id: 9,
+          title: "The Biohazard Lab",
+          concept: "Optional Characters ?",
+          targets: ["color", "colour"],
+          decoys: ["colouur", "colr", "collar"],
+          hint: "Make the 'u' optional using 'u?': colou?r",
+          solution: "colou?r"
+        },
+        {
+          id: 10,
+          title: "The Hexagon Core",
+          concept: "Hex Color Codes",
+          targets: ["#ff0000", "#00ff00", "#38bdf8"],
+          decoys: ["#ffg000", "#12345", "ff0000", "#1234567"],
+          hint: "Match # followed by 6 hex digits [0-9a-f]{6}.",
+          solution: "^#[0-9a-f]{6}$"
+        },
+        {
+          id: 11,
+          title: "The Telemetry Matrix",
+          concept: "Word Boundaries \\b",
+          targets: ["the cat sat", "a cat in the hat"],
+          decoys: ["certificate", "scatter", "category"],
+          hint: "Use \\bcat\\b to match 'cat' as a standalone word.",
+          solution: "\\bcat\\b"
+        },
+        {
+          id: 12,
+          title: "The Master Vault",
+          concept: "Master Validation",
+          targets: ["API_KEY_99a", "API_KEY_42b", "API_KEY_77z"],
+          decoys: ["API_KEY_99", "API_KEY_a", "API_KEY_99A"],
+          hint: "Combine prefix, two digits, and one lowercase letter.",
+          solution: "API_KEY_\\d{2}[a-z]"
+        }
+      ];
+
+      let currentRoomIdx = 0;
+      let timerSeconds = 0;
+      let timerInterval = null;
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          const mins = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
+          const secs = String(timerSeconds % 60).padStart(2, "0");
+          document.getElementById("timerText").textContent = `${mins}:${secs}`;
+        }, 1000);
+      }
+
+      function loadRoom(idx) {
+        currentRoomIdx = idx;
+        const room = rooms[idx];
+        document.getElementById("badgeRoom").textContent = `Room ${idx + 1} of 12`;
+        document.getElementById("roomTitle").textContent = room.title;
+        document.getElementById("regexInput").value = "";
+        document.getElementById("hintText").textContent = `💡 Mission: Match all target strings using ${room.concept}.`;
+        document.getElementById("btnNextRoom").style.display = "none";
+
+        // Build target list
+        const tContainer = document.getElementById("targetList");
+        tContainer.innerHTML = "";
+        room.targets.forEach((str) => {
+          const div = document.createElement("div");
+          div.className = "match-item";
+          div.dataset.val = str;
+          div.innerHTML = `<span>"${str}"</span><span class="status-pill">Unmatched</span>`;
+          tContainer.appendChild(div);
+        });
+
+        // Build decoy list
+        const dContainer = document.getElementById("decoyList");
+        dContainer.innerHTML = "";
+        room.decoys.forEach((str) => {
+          const div = document.createElement("div");
+          div.className = "match-item";
+          div.dataset.val = str;
+          div.innerHTML = `<span>"${str}"</span><span class="status-pill">Clean</span>`;
+          dContainer.appendChild(div);
+        });
+
+        evaluateRegex("");
+      }
+
+      function evaluateRegex(patternStr) {
+        const room = rooms[currentRoomIdx];
+        const doorWrap = document.getElementById("doorWrap");
+        const doorIcon = document.getElementById("doorIcon");
+        const doorStatus = document.getElementById("doorStatus");
+        const btnNext = document.getElementById("btnNextRoom");
+
+        if (!patternStr.trim()) {
+          doorWrap.classList.remove("unlocked");
+          doorIcon.setAttribute("data-feather", "lock");
+          doorStatus.textContent = "Vault Sealed";
+          btnNext.style.display = "none";
+          feather.replace();
+          return;
+        }
+
+        let regex = null;
+        try {
+          regex = new RegExp(patternStr, "i");
+        } catch {
+          doorStatus.textContent = "Invalid Syntax";
+          return;
+        }
+
+        let allTargetsMatched = true;
+        let anyDecoyMatched = false;
+
+        // Check targets
+        document.querySelectorAll("#targetList .match-item").forEach((el) => {
+          const val = el.dataset.val;
+          const isMatch = regex.test(val);
+          el.classList.toggle("matched-target", isMatch);
+          el.querySelector(".status-pill").textContent = isMatch ? "Unlocked ✓" : "Unmatched";
+          if (!isMatch) allTargetsMatched = false;
+        });
+
+        // Check decoys
+        document.querySelectorAll("#decoyList .match-item").forEach((el) => {
+          const val = el.dataset.val;
+          const isMatch = regex.test(val);
+          el.classList.toggle("matched-decoy", isMatch);
+          el.querySelector(".status-pill").textContent = isMatch ? "Trap Triggered ✗" : "Clean";
+          if (isMatch) anyDecoyMatched = true;
+        });
+
+        if (allTargetsMatched && !anyDecoyMatched) {
+          doorWrap.classList.add("unlocked");
+          doorIcon.setAttribute("data-feather", "unlock");
+          doorStatus.textContent = "Vault Unlocked! 🎉";
+          btnNext.style.display = "inline-flex";
+          feather.replace();
+        } else {
+          doorWrap.classList.remove("unlocked");
+          doorIcon.setAttribute("data-feather", "lock");
+          doorStatus.textContent = anyDecoyMatched ? "Trap Triggered (Decoy Matched)" : "Vault Sealed";
+          btnNext.style.display = "none";
+          feather.replace();
+        }
+      }
+
+      document.getElementById("regexInput").addEventListener("input", (e) => {
+        evaluateRegex(e.target.value);
+      });
+
+      document.getElementById("btnHint").onclick = () => {
+        const room = rooms[currentRoomIdx];
+        document.getElementById("hintText").textContent = `💡 Hint: ${room.hint}`;
+      };
+
+      document.getElementById("btnNextRoom").onclick = () => {
+        if (currentRoomIdx < rooms.length - 1) {
+          loadRoom(currentRoomIdx + 1);
+        } else {
+          alert(`🏆 Victory! You conquered all 12 Regex Escape Rooms in ${document.getElementById("timerText").textContent}!`);
+        }
+      };
+
+      // Start game
+      loadRoom(0);
+      startTimer();
+    </script>
+  </body>
+</html>
