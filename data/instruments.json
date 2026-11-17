@@ -244,6 +244,37 @@
       "status": "live"
     },
     {
+      "id": "open-volume-engine",
+      "name": "Open Volume Engine",
+      "shortDescription": "A zero-dependency Web Audio mastering console with gain staging, compression, saturation, mid/side width, a brickwall limiter and live loudness metering.",
+      "longDescription": "## Open Volume Engine\n\nAn open, browser-native gain-staging and mastering console. Route the built-in demo loop, a microphone, or a local audio file through a real signal chain and hear the difference instantly — no installs, samples, or external libraries.\n\n### Features\n\n- **Full Signal Chain:** Input trim, high-pass filter, compressor with makeup gain, tanh saturation, mid/side stereo width, output limiter, and master fader.\n- **Real Web Audio Processing:** Every control drives native AudioNodes — DynamicsCompressor, BiquadFilter, WaveShaper, splitter/merger matrix, and gain automation — with smooth parameter ramps.\n- **Live Monitoring:** Input/output dBFS meters, per-frame gain-reduction readout, peak hold with reset, headroom, and an approximate unweighted LUFS estimate.\n- **Real-Time Spectrum:** A canvas analyser shows 20 Hz–20 kHz output energy with theme-aware colours.\n- **Instant A/B Bypass:** Compare the processed chain against the dry path without losing the master fader.\n- **Three Sources:** A built-in 96 BPM demo loop synthesised on the fly, microphone capture for live processing, or any local audio file (looped).\n- **Preset Starting Points:** Gentle Glue, Club Master, Lo-Fi Tape, Voice Clean, Wide & Open, and Punch Flat.\n- **Responsive & Accessible:** Keyboard-operable controls, spacebar transport, ARIA meters and labels, reduced-motion support, persisted dark/light theme, and a mobile-first layout.\n- **100% Offline:** One HTML file with inline CSS and JavaScript, no CDN links or third-party dependencies.",
+      "category": "effects",
+      "tags": [
+        "audio",
+        "compressor",
+        "effects",
+        "gain-staging",
+        "loudness",
+        "mastering",
+        "metering",
+        "saturation",
+        "stereo-width",
+        "web-audio-api"
+      ],
+      "techStack": [
+        "Canvas 2D",
+        "CSS3",
+        "HTML5",
+        "Vanilla JS",
+        "Web Audio API"
+      ],
+      "frameworks": [
+        "Web Audio API"
+      ],
+      "difficulty": "Hard",
+      "status": "live"
+    },
+    {
       "id": "theremin-synth-visualizer",
       "name": "Theremin Synth & Visualizer",
       "shortDescription": "An expressive in-browser theremin synthesizer featuring a 2D touch/mouse pitch-volume field, multi-wave oscillators, scale quantization, analog delay, and a real-time oscilloscope.",
